@@ -32,12 +32,27 @@ const allHumors = [
   "😜 Brincalhão", "😶 Indeciso", "😱 Assustado"
 ];
 
-const colors = [
-  "#FF6384", "#36A2EB", "#FFCE56", "#9CCC65", "#FF9F40",
-  "#4BC0C0", "#9966FF", "#FF6384", "#36A2EB", "#FFCE56",
-  "#9CCC65", "#FF9F40", "#4BC0C0", "#9966FF", "#FF6384",
-  "#36A2EB", "#FFCE56", "#9CCC65"
-];
+// Mapa humor -> cor
+const humorColors = {
+  "😃 Feliz": "#FF6384",
+  "😢 Triste": "#36A2EB",
+  "😡 Bravo": "#FFCE56",
+  "😐 Neutro": "#9CCC65",
+  "😎 Confiante": "#FF9F40",
+  "😰 Ansioso": "#4BC0C0",
+  "😔 Desmotivado": "#9966FF",
+  "😴 Cansado": "#FF6384",
+  "🤗 Relaxado": "#36A2EB",
+  "😍 Apaixonado": "#FFCE56",
+  "😭 Desesperado": "#9CCC65",
+  "😅 Aliviado": "#FF9F40",
+  "🤔 Pensativo": "#4BC0C0",
+  "😬 Nervoso": "#9966FF",
+  "😇 Grato": "#FF6384",
+  "😜 Brincalhão": "#36A2EB",
+  "😶 Indeciso": "#FFCE56",
+  "😱 Assustado": "#9CCC65"
+};
 
 let history = JSON.parse(localStorage.getItem('humorHistory')) || [];
 
@@ -115,10 +130,13 @@ function renderChart() {
 
   const labels = Object.keys(counts);
   const data = Object.values(counts);
+  const backgroundColors = labels.map(label => humorColors[label] || "#000");
 
   if (window.humorChartInstance) {
     window.humorChartInstance.data.labels = labels;
     window.humorChartInstance.data.datasets[0].data = data;
+    window.humorChartInstance.data.datasets[0].backgroundColor = backgroundColors;
+    window.humorChartInstance.data.datasets[0].borderColor = backgroundColors;
     window.humorChartInstance.update();
     return;
   }
@@ -131,8 +149,8 @@ function renderChart() {
       datasets: [{
         label: 'Quantidade de vezes',
         data: data,
-        backgroundColor: colors,
-        borderColor: colors,
+        backgroundColor: backgroundColors,
+        borderColor: backgroundColors,
         borderWidth: 1
       }]
     },
