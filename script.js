@@ -33,7 +33,7 @@ const allHumors = [
   "😜 Brincalhão", "😶 Indeciso", "😱 Assustado"
 ];
 
-// Mapa humor -> cor
+// Mapa humor -> cor do gráfico
 const humorColors = {
   "😃 Feliz": "#FF6384",
   "😢 Triste": "#36A2EB",
@@ -53,6 +53,28 @@ const humorColors = {
   "😜 Brincalhão": "#36A2EB",
   "😶 Indeciso": "#FFCE56",
   "😱 Assustado": "#9CCC65"
+};
+
+// Mapa humor -> cor do fundo da página
+const backgroundColors = {
+  "😃 Feliz": "#FFF0F0",
+  "😢 Triste": "#E0F0FF",
+  "😡 Bravo": "#FFE0E0",
+  "😐 Neutro": "#F0F0F0",
+  "😎 Confiante": "#FFF8E0",
+  "😰 Ansioso": "#E0EFFF",
+  "😔 Desmotivado": "#F0E0F8",
+  "😴 Cansado": "#E0E0FF",
+  "🤗 Relaxado": "#E0FFE0",
+  "😍 Apaixonado": "#FFE0F0",
+  "😭 Desesperado": "#D0E0FF",
+  "😅 Aliviado": "#FFF8D0",
+  "🤔 Pensativo": "#F0F8FF",
+  "😬 Nervoso": "#FFE8E0",
+  "😇 Grato": "#F0FFF0",
+  "😜 Brincalhão": "#FFF0E0",
+  "😶 Indeciso": "#F8F8F8",
+  "😱 Assustado": "#FFD0D0"
 };
 
 let history = JSON.parse(localStorage.getItem('humorHistory')) || [];
@@ -87,6 +109,12 @@ function renderHistory() {
   }
 }
 
+// Atualiza cor de fundo
+function updateBackground(humor) {
+  const color = backgroundColors[humor] || "#FFFFFF";
+  document.body.style.backgroundColor = color;
+}
+
 // Adiciona humor
 function addHumor(humor, displayText) {
   const now = new Date();
@@ -99,7 +127,8 @@ function addHumor(humor, displayText) {
   texto.textContent = messages[humor];
   renderHistory();
   renderChart();
-  renderSummary(); // atualiza o resumo sempre que adiciona um humor
+  renderSummary();
+  updateBackground(displayText.trim()); // atualiza cor do fundo
 }
 
 // Eventos dos botões
@@ -129,13 +158,13 @@ function renderChart() {
 
   const labels = Object.keys(counts);
   const data = Object.values(counts);
-  const backgroundColors = labels.map(label => humorColors[label] || "#000");
+  const bgColors = labels.map(label => humorColors[label] || "#000");
 
   if (window.humorChartInstance) {
     window.humorChartInstance.data.labels = labels;
     window.humorChartInstance.data.datasets[0].data = data;
-    window.humorChartInstance.data.datasets[0].backgroundColor = backgroundColors;
-    window.humorChartInstance.data.datasets[0].borderColor = backgroundColors;
+    window.humorChartInstance.data.datasets[0].backgroundColor = bgColors;
+    window.humorChartInstance.data.datasets[0].borderColor = bgColors;
     window.humorChartInstance.update();
     return;
   }
@@ -148,17 +177,15 @@ function renderChart() {
       datasets: [{
         label: 'Quantidade de vezes',
         data: data,
-        backgroundColor: backgroundColors,
-        borderColor: backgroundColors,
+        backgroundColor: bgColors,
+        borderColor: bgColors,
         borderWidth: 1
       }]
     },
     options: {
       responsive: true,
       plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, precision: 0 }
-      }
+      scales: { y: { beginAtZero: true, precision: 0 } }
     }
   });
 }
@@ -176,12 +203,14 @@ function renderSummary() {
 
   const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
 
-  let summary = "Nos últimos 7 dias, você esteve principalmente ";
+  let summary = "Nos últimos 7 dias, a pessoa esteve principalmente ";
   if (sorted.length > 0) {
     summary += sorted[0][0];
     if (sorted.length > 1) {
-      summary += ", mas também apresentou humores como " + sorted.slice(1,4).map(s => s[0]).join(",");
+      summary += ", mas também apresentou humores como " + sorted.slice(1,4).map(s => s[0]).join(", ");
     }
+    // Atualiza cor de fundo pelo último humor registrado
+    updateBackground(sorted[0][0]);
   } else {
     summary = "Não há registros recentes.";
   }
