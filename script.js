@@ -3,6 +3,7 @@ console.log("SCRIPT CARREGOU");
 const buttons = document.querySelectorAll('.botoes button');
 const texto = document.getElementById('texto');
 const historyContainer = document.getElementById('historyContainer');
+const summaryContainer = document.getElementById('summaryContainer'); // container para o resumo
 
 const messages = {
   feliz: "Que bom que você está feliz! 😄",
@@ -89,7 +90,7 @@ function renderHistory() {
 // Adiciona humor
 function addHumor(humor, displayText) {
   const now = new Date();
-  const date = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  const date = now.toISOString().split('T')[0];
   const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   history.push({ date, time, humor: displayText.trim() });
@@ -98,6 +99,7 @@ function addHumor(humor, displayText) {
   texto.textContent = messages[humor];
   renderHistory();
   renderChart();
+  renderSummary(); // atualiza o resumo sempre que adiciona um humor
 }
 
 // Eventos dos botões
@@ -114,12 +116,9 @@ renderHistory();
 // Renderiza gráfico
 function renderChart() {
   const last7Days = new Date();
-  last7Days.setDate(last7Days.getDate() - 6); // últimos 7 dias
+  last7Days.setDate(last7Days.getDate() - 6);
 
-  const filtered = history.filter(h => {
-    const entryDate = new Date(h.date);
-    return entryDate >= last7Days;
-  });
+  const filtered = history.filter(h => new Date(h.date) >= last7Days);
 
   const counts = {};
   allHumors.forEach(h => counts[h] = 0);
@@ -156,17 +155,39 @@ function renderChart() {
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
+      plugins: { legend: { display: false } },
       scales: {
-        y: {
-          beginAtZero: true,
-          precision: 0
-        }
+        y: { beginAtZero: true, precision: 0 }
       }
     }
   });
 }
 
+// Renderiza resumo do estado emocional
+function renderSummary() {
+  if (!summaryContainer) return;
+
+  const last7Days = new Date();
+  last7Days.setDate(last7Days.getDate() - 6);
+
+  const recentEntries = history.filter(h => new Date(h.date) >= last7Days);
+  const counts = {};
+  recentEntries.forEach(entry => { counts[entry.humor] = (counts[entry.humor] || 0) + 1; });
+
+  const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+
+  let summary = "Nos últimos 7 dias, você esteve principalmente ";
+  if (sorted.length > 0) {
+    summary += sorted[0][0];
+    if (sorted.length > 1) {
+      summary += ", mas também apresentou humores como " + sorted.slice(1,4).map(s => s[0]).join(",");
+    }
+  } else {
+    summary = "Não há registros recentes.";
+  }
+
+  summaryContainer.textContent = summary;
+}
+
 renderChart();
+renderSummary();
