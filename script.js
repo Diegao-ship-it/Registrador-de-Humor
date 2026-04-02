@@ -3,7 +3,7 @@ console.log("SCRIPT CARREGOU");
 const buttons = document.querySelectorAll('.botoes button');
 const texto = document.getElementById('texto');
 const historyContainer = document.getElementById('historyContainer');
-const summaryContainer = document.getElementById('summaryContainer'); // container para o resumo
+const summaryContainer = document.getElementById('summaryContainer'); 
 
 const messages = {
   feliz: "Que bom que você está feliz! 😄",
@@ -33,7 +33,6 @@ const allHumors = [
   "😜 Brincalhão", "😶 Indeciso", "😱 Assustado"
 ];
 
-// Mapa humor -> cor do gráfico
 const humorColors = {
   "😃 Feliz": "#FF6384",
   "😢 Triste": "#36A2EB",
@@ -55,7 +54,6 @@ const humorColors = {
   "😱 Assustado": "#9CCC65"
 };
 
-// Mapa humor -> cor do fundo da página
 const backgroundColors = {
   "😃 Feliz": "#FFF0F0",
   "😢 Triste": "#E0F0FF",
@@ -79,7 +77,6 @@ const backgroundColors = {
 
 let history = JSON.parse(localStorage.getItem('humorHistory')) || [];
 
-// Renderiza histórico
 function renderHistory() {
   historyContainer.innerHTML = '';
   const grouped = {};
@@ -109,13 +106,11 @@ function renderHistory() {
   }
 }
 
-// Atualiza cor de fundo
 function updateBackground(humor) {
   const color = backgroundColors[humor] || "#FFFFFF";
   document.body.style.backgroundColor = color;
 }
 
-// Adiciona humor
 function addHumor(humor, displayText) {
   const now = new Date();
   const date = now.toISOString().split('T')[0];
@@ -128,10 +123,9 @@ function addHumor(humor, displayText) {
   renderHistory();
   renderChart();
   renderSummary();
-  updateBackground(displayText.trim()); // atualiza cor do fundo
+  updateBackground(displayText.trim()); 
 }
 
-// Eventos dos botões
 buttons.forEach(button => {
   button.addEventListener('click', () => {
     const humor = button.dataset.humor;
@@ -142,7 +136,6 @@ buttons.forEach(button => {
 
 renderHistory();
 
-// Renderiza gráfico
 function renderChart() {
   const last7Days = new Date();
   last7Days.setDate(last7Days.getDate() - 6);
@@ -190,7 +183,6 @@ function renderChart() {
   });
 }
 
-// Renderiza resumo do estado emocional
 function renderSummary() {
   if (!summaryContainer) return;
 
@@ -209,7 +201,6 @@ function renderSummary() {
     if (sorted.length > 1) {
       summary += ", mas também apresentou humores como " + sorted.slice(1,4).map(s => s[0]).join(", ");
     }
-    // Atualiza cor de fundo pelo último humor registrado
     updateBackground(sorted[0][0]);
   } else {
     summary = "Não há registros recentes.";
