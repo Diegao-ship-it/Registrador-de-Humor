@@ -92,6 +92,8 @@ function renderChart() {
     if (counts[e.humor] !== undefined) counts[e.humor]++;
   });
 
+  const maxValue = Math.max(...Object.values(counts), 1);
+
   Object.keys(counts).forEach(label => {
     const value = counts[label];
 
@@ -100,7 +102,7 @@ function renderChart() {
 
     const bar = document.createElement('div');
     bar.className = "bar";
-    bar.style.height = (value * 20) + "px";
+    bar.style.height = (value / maxValue * 100) + "%";
     bar.style.backgroundColor = humorColors[label];
 
     const text = document.createElement('span');
