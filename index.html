@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="icon" href="https://twemoji.maxcdn.com/v/latest/72x72/1f603.png" type="image/png">
   <meta charset="UTF-8">
-  <meta name="description" content="Simulador de humor interativo que altera cores, texto e imagem conforme o estado emocional do usuário.">
-  <meta name="keywords" content="humor, emoções, simulador, interativo, javascript">
-  <meta name="author" content="Diego">
+  <meta name="description" content="Simulador de humor interativo">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrador de Humor</title>
-  <link rel="stylesheet" href="./style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
 
+  <link rel="stylesheet" href="./style.css">
+
+  <link rel="icon" href="https://twemoji.maxcdn.com/v/latest/72x72/1f603.png" type="image/png">
+
+
+</head>
+
+<body>
 <main class="container">
+
   <h1>Como você está agora?</h1>
   <p id="texto">Escolha um humor abaixo 👇</p>
 
@@ -42,8 +44,11 @@
   <div id="historyContainer"></div>
 
   <h2>Resumo da última semana</h2>
-  <p id="summaryContainer" style="font-weight: bold; margin-bottom: 10px;"></p>
-  <canvas id="humorChart" width="400" height="200"></canvas>
+  <p id="summaryContainer"></p>
+
+  <h2>Gráfico (últimos 7 dias)</h2>
+  <div id="chart"></div>
+
 </main>
 
 <script src="./script.js"></script>
